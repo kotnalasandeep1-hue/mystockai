@@ -63,27 +63,16 @@ def get_stock_status_full_params(data):
         return "⚪ N/A", "Neutral", 99 
 
     data['rsi'] = ta.rsi(data['Close'], length=14) 
-    macd_data = ta.macd(data['Close'])
-    
-    # Check if MACD data was successfully generated before accessing keys
-    if macd_data is None or macd_data.empty or 'MACD_12_26_9' not in macd_data.columns:
-        return "⚪ N/A", "Neutral", 99
-    
-    # Assign the correct column names
-    data['macd'] = macd_data['MACD_12_26_9']
-    data['macd_signal'] = macd_data['MACDS_12_26_9']
-        
     data['vol_avg_20d'] = data['Volume'].rolling(window=20).mean()
 
     last_rsi = data['rsi'].iloc[-1]
-    last_macd = data['macd'].iloc[-1]
-    last_signal = data['macd_signal'].iloc[-1]
     last_volume = data['Volume'].iloc[-1]
     avg_volume = data['vol_avg_20d'].iloc[-1]
     last_close = data['Close'].iloc[-1]
     ma_50 = data['Close'].rolling(window=50).mean().iloc[-1]
 
-    if last_rsi >= 70 and last_macd > last_signal and last_close > ma_50 and last_volume > (avg_volume * 1.5):
+    # Removed MACD checks. Status is now based on RSI, Volume, and MA50
+    if last_rsi >= 70 and last_close > ma_50 and last_volume > (avg_volume * 1.5):
         label = "🚀 VERY HOT"
         color = "red"
         order = 1
