@@ -152,7 +152,7 @@ def main():
     with col1:
         st.subheader("Cap Momentum Radar")
         # FIXED SYNTAX ERROR: Assigning concrete values for the donut chart visualization
-        sizes = [50, 30, 20] 
+        sizes = [50, 30, 20]
         custom_colors = ['#27AE60', '#F39C12', '#E74C3C'] 
 
         fig_cap = go.Figure(data=[go.Pie(labels=['LARGE CAP', 'MID CAP', 'SMALL CAP'], 
