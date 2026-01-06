@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-import pandas_ta as ta 
+import pandas_ta as ta # Using pandas_ta which installs easily on Streamlit Cloud
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
@@ -64,9 +64,15 @@ def get_stock_status_full_params(data):
 
     data['rsi'] = ta.rsi(data['Close'], length=14) 
     macd_data = ta.macd(data['Close'])
-    # FIXED: Use the correct key names returned by pandas-ta
-    data['macd'] = macd_data['MACD_12_26_9']
-    data['macd_signal'] = macd_data['MACDS_12_26_9']
+    
+    # Check if MACD data was successfully generated before accessing keys
+    if macd_data is not None and not macd_data.empty and 'MACD_12_26_9' in macd_data.columns:
+        data['macd'] = macd_data['MACD_12_26_9']
+        data['macd_signal'] = macd_data['MACDS_12_26_9']
+    else:
+        # Handle cases where MACD cannot be calculated due to insufficient data
+        return "⚪ N/A", "Neutral", 99
+        
     data['vol_avg_20d'] = data['Volume'].rolling(window=20).mean()
 
     last_rsi = data['rsi'].iloc[-1]
@@ -203,7 +209,8 @@ def main():
         stock_data_list = []
         for ticker_symbol in stocks_list:
             data = yf.Ticker(ticker_symbol).history(period="6mo")
-            if not data.empty and len(data) >= 50:
+            # Ensure enough data before calling TA function that needs >26 days
+            if not data.empty and len(data) >= 50: 
                 label, color_status, order = get_stock_status_full_params(data) 
                 last_price = data['Close'].iloc[-1]
                 stock_data_list.append({"Ticker": ticker_symbol, "Status": label, "Price": last_price, "Order": order})
