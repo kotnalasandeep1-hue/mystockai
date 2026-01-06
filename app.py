@@ -71,7 +71,6 @@ def get_stock_status_full_params(data):
     last_close = data['Close'].iloc[-1]
     ma_50 = data['Close'].rolling(window=50).mean().iloc[-1]
 
-    # Removed MACD checks. Status is now based on RSI, Volume, and MA50
     if last_rsi >= 70 and last_close > ma_50 and last_volume > (avg_volume * 1.5):
         label = "🚀 VERY HOT"
         color = "red"
@@ -152,7 +151,8 @@ def main():
 
     with col1:
         st.subheader("Cap Momentum Radar")
-        sizes = # Placeholder values
+        # FIXED SYNTAX ERROR: Assigning concrete values for the donut chart visualization
+        sizes = [50, 30, 20] 
         custom_colors = ['#27AE60', '#F39C12', '#E74C3C'] 
 
         fig_cap = go.Figure(data=[go.Pie(labels=['LARGE CAP', 'MID CAP', 'SMALL CAP'], 
@@ -180,8 +180,8 @@ def main():
             if rsi_val >= 70: status_label, color = "🚀 VERY HOT", "red"
             elif 55 <= rsi_val < 70: status_label, color = "🟢 BULLISH", "green"
             elif 40 <= rsi_val < 55: status_label, color = "🟡 NEUTRAL", "orange"
-            else: status_label, color = "🔴 LAGGARD", "grey"
-
+            else: status_label, color = "🔴 LAGGARD"
+                
             st.markdown(f"- :{color}[**{status_label}:** {name} | RSI: **{rsi_val:.1f}%**]")
 
 
