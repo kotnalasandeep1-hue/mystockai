@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-import pandas_ta as ta # Changed from 'ta' to 'pandas_ta as ta'
+import pandas_ta as ta 
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
@@ -64,6 +64,7 @@ def get_stock_status_full_params(data):
 
     data['rsi'] = ta.rsi(data['Close'], length=14) 
     macd_data = ta.macd(data['Close'])
+    # FIXED: Use the correct key names returned by pandas-ta
     data['macd'] = macd_data['MACD_12_26_9']
     data['macd_signal'] = macd_data['MACDS_12_26_9']
     data['vol_avg_20d'] = data['Volume'].rolling(window=20).mean()
@@ -138,10 +139,9 @@ def plot_stock_chart(ticker_symbol):
     fig.update_layout(xaxis_rangeslider_visible=False, height=500, title=f"{ticker_symbol} Price History")
     st.plotly_chart(fig, use_container_width=True)
 
-# Function to generate the clickable link (FIXED URL)
+# Function to generate the clickable link
 def make_clickable(ticker):
     # Using target='_blank' ensures it opens in a new tab
-    # Added "https://" and the correct symbol structure
     link = f"www.tradingview.com:{ticker.replace('.NS', '')}"
     return f'<a href="{link}" target="_blank">{ticker}</a>'
 
@@ -208,7 +208,7 @@ def main():
                 last_price = data['Close'].iloc[-1]
                 stock_data_list.append({"Ticker": ticker_symbol, "Status": label, "Price": last_price, "Order": order})
 
-        # Check if the list has anything in it before creating the DataFrame (Fixed Indentation)
+        # Check if the list has anything in it before creating the DataFrame
         if stock_data_list: 
             stock_df = pd.DataFrame(stock_data_list)
             
@@ -216,12 +216,11 @@ def main():
                 # Sort the DataFrame using the 'Order' column (VERY HOT first, LAGGARD last)
                 stock_df = stock_df.sort_values(by="Order", ascending=True).drop(columns=["Order"])
                 
-                # Apply the function to the Ticker column and display as HTML table (ADDED YOUR LINK LOGIC HERE)
+                # Apply the function to the Ticker column and display as HTML table
                 stock_df['Ticker'] = stock_df['Ticker'].apply(make_clickable)
 
-                # Note: The custom color styling is removed because we switch to this simple HTML table display method.
                 st.markdown(stock_df.to_html(escape=False, index=False), unsafe_allow_html=True)
-        else: # If the list is empty, show a message instead of crashing (Fixed Indentation)
+        else: # If the list is empty, show a message instead of crashing
             st.info(f"No sufficient data available to run analysis for all stocks in {selected_sector}.")
 
 # This line runs the main function when the script is executed
