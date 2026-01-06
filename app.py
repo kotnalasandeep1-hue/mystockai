@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-import pandas as pd
+import pandas_ta as pd
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import ta # Library for technical analysis indicators (RSI, MACD)
@@ -229,3 +229,4 @@ def main():
 # This line runs the main function when the script is executed
 if __name__ == "__main__":
     main()
+
