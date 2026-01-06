@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-import pandas_ta as ta # Using pandas_ta which installs easily on Streamlit Cloud
+import pandas_ta as ta 
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
@@ -165,7 +165,7 @@ def main():
     with col1:
         st.subheader("Cap Momentum Radar")
         # Assigning concrete values for the donut chart visualization
-        sizes = [50, 30, 20]
+        sizes =
         custom_colors = ['#27AE60', '#F39C12', '#E74C3C'] 
 
         fig_cap = go.Figure(data=[go.Pie(labels=['LARGE CAP', 'MID CAP', 'SMALL CAP'], 
