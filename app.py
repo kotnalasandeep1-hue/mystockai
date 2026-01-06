@@ -204,11 +204,14 @@ def main():
                 last_price = data['Close'].iloc[-1]
                 stock_data_list.append({"Ticker": ticker_symbol, "Status": label, "Price": last_price, "Order": order})
         
-        stock_df = pd.DataFrame(stock_data_list)
-        
-        if not stock_df.empty:
-            # Sort the DataFrame using the 'Order' column (VERY HOT first, LAGGARD last)
-            stock_df = stock_df.sort_values(by="Order", ascending=True).drop(columns=["Order"])
+              if stock_data_list: # Check if the list has anything in it
+    stock_df = pd.DataFrame(stock_data_list)
+    
+    if not stock_df.empty:
+        # Sort the DataFrame using the 'Order' column (VERY HOT first, LAGGARD last)
+        stock_df = stock_df.sort_values(by="Order", ascending=True).drop(columns=["Order"])
+else: # If the list is empty, show a message instead of crashing
+    st.warning("No stocks matched the criteria for this selection (e.g., less than 50 days of data).")
 
             # Function to generate the clickable link
             def make_clickable(ticker):
@@ -229,4 +232,5 @@ def main():
 # This line runs the main function when the script is executed
 if __name__ == "__main__":
     main()
+
 
