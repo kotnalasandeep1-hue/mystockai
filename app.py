@@ -147,7 +147,6 @@ def plot_stock_chart(ticker_symbol):
 
 # Function to generate the clickable link
 def make_clickable(ticker):
-    # Using target='_blank' ensures it opens in a new tab
     link = f"www.tradingview.com:{ticker.replace('.NS', '')}"
     return f'<a href="{link}" target="_blank">{ticker}</a>'
 
@@ -164,8 +163,7 @@ def main():
 
     with col1:
         st.subheader("Cap Momentum Radar")
-        # Assigning concrete values for the donut chart visualization
-        sizes = [50, 30, 20] # Placeholder values
+        sizes = # Placeholder values
         custom_colors = ['#27AE60', '#F39C12', '#E74C3C'] 
 
         fig_cap = go.Figure(data=[go.Pie(labels=['LARGE CAP', 'MID CAP', 'SMALL CAP'], 
