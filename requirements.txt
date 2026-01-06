@@ -1,3 +1,3 @@
 yfinance
 plotly
-ta-lib-bin
+pandas-ta
