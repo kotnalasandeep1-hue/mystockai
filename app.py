@@ -66,12 +66,12 @@ def get_stock_status_full_params(data):
     macd_data = ta.macd(data['Close'])
     
     # Check if MACD data was successfully generated before accessing keys
-    if macd_data is not None and not macd_data.empty and 'MACD_12_26_9' in macd_data.columns:
-        data['macd'] = macd_data['MACD_12_26_9']
-        data['macd_signal'] = macd_data['MACDS_12_26_9']
-    else:
-        # Handle cases where MACD cannot be calculated due to insufficient data
+    if macd_data is None or macd_data.empty or 'MACD_12_26_9' not in macd_data.columns:
         return "⚪ N/A", "Neutral", 99
+    
+    # Assign the correct column names
+    data['macd'] = macd_data['MACD_12_26_9']
+    data['macd_signal'] = macd_data['MACDS_12_26_9']
         
     data['vol_avg_20d'] = data['Volume'].rolling(window=20).mean()
 
@@ -165,7 +165,7 @@ def main():
     with col1:
         st.subheader("Cap Momentum Radar")
         # Assigning concrete values for the donut chart visualization
-        sizes =
+        sizes = [50, 30, 20] # Placeholder values
         custom_colors = ['#27AE60', '#F39C12', '#E74C3C'] 
 
         fig_cap = go.Figure(data=[go.Pie(labels=['LARGE CAP', 'MID CAP', 'SMALL CAP'], 
@@ -209,25 +209,20 @@ def main():
         stock_data_list = []
         for ticker_symbol in stocks_list:
             data = yf.Ticker(ticker_symbol).history(period="6mo")
-            # Ensure enough data before calling TA function that needs >26 days
             if not data.empty and len(data) >= 50: 
                 label, color_status, order = get_stock_status_full_params(data) 
                 last_price = data['Close'].iloc[-1]
                 stock_data_list.append({"Ticker": ticker_symbol, "Status": label, "Price": last_price, "Order": order})
 
-        # Check if the list has anything in it before creating the DataFrame
         if stock_data_list: 
             stock_df = pd.DataFrame(stock_data_list)
             
             if not stock_df.empty:
-                # Sort the DataFrame using the 'Order' column (VERY HOT first, LAGGARD last)
                 stock_df = stock_df.sort_values(by="Order", ascending=True).drop(columns=["Order"])
-                
-                # Apply the function to the Ticker column and display as HTML table
                 stock_df['Ticker'] = stock_df['Ticker'].apply(make_clickable)
 
                 st.markdown(stock_df.to_html(escape=False, index=False), unsafe_allow_html=True)
-        else: # If the list is empty, show a message instead of crashing
+        else: 
             st.info(f"No sufficient data available to run analysis for all stocks in {selected_sector}.")
 
 # This line runs the main function when the script is executed
